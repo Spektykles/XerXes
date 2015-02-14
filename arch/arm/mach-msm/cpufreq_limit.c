@@ -79,7 +79,9 @@ static ssize_t msm_cpufreq_limit_version_show(struct kobject *kobj, struct kobj_
 }
 
 static struct kobj_attribute msm_cpufreq_limit_attribute = 
-	__ATTR(cpufreq_limit, 0666, msm_cpufreq_limit_show, msm_cpufreq_limit_store);
+	__ATTR(cpufreq_limit, S_IRUGO | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH,
+		msm_cpufreq_limit_show,
+		msm_cpufreq_limit_store);
 
 static struct kobj_attribute msm_cpufreq_limit_version_attribute = 
 	__ATTR(msm_cpufreq_limit_version, 0444 , msm_cpufreq_limit_version_show, NULL);
