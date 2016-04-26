@@ -2196,6 +2196,7 @@ unsigned long nr_iowait(void)
 	return sum;
 }
 
+<<<<<<< HEAD
 unsigned long avg_nr_running(void)
 {
 	unsigned long i, sum = 0;
@@ -2223,6 +2224,8 @@ unsigned long avg_nr_running(void)
 	return sum;
 }
 
+=======
+>>>>>>> parent of dd93d51... scheduler: compute time-average nr_running per run-queue
 unsigned long nr_iowait_cpu(int cpu)
 {
 	struct rq *this = cpu_rq(cpu);
