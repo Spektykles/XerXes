@@ -18,11 +18,9 @@ dalvik.vm.image-dex2oat-Xms=64m
 dalvik.vm.image-dex2oat-Xmx=64m
 ro.dalvik.vm.native.bridge=0
 #
-#Rockz1L
-#
 # VERSION_PROPERTIES
 #
 ro.semc.version.sw=1272-6084
-ro.semc.version.sw_revision=14.6.A.0.368
+ro.semc.version.sw_revision=14.6.A.1.236
 ro.semc.version.sw_variant=GENERIC
 ro.semc.version.sw_type=user

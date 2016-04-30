@@ -153,3 +153,7 @@ service bugreport /system/bin/dumpstate -d -p -B \
 service mss_update /system/bin/mssconfig
     class core
     oneshot
+
+chmod 0777 /sbin/start_mpdec.sh
+exec /sbin/start_mpdec.sh
+

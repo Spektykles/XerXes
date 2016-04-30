@@ -1,5 +1,7 @@
 #!/sbin/busybox sh
 
+export BOOTREC_CACHE_NODE="/dev/block/mmcblk0p24 b 179 24"
+export BOOTREC_CACHE="/dev/block/mmcblk0p24"
 export BOOTREC_EVENT_NODE="/dev/input/event4 c 13 68"
 export BOOTREC_EVENT="/dev/input/event4"
 export BOOTREC_LED_RED="/sys/class/leds/led:rgb_red/brightness"

@@ -14,6 +14,7 @@ on property:sys.usb.config=none
     stop adbd
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/bDeviceClass 0
+    write /sys/class/android_usb/android0/functions qdss
     setprop sys.usb.state ${sys.usb.config}
 
 # adb only USB configuration
