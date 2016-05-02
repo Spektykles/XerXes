@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "XerXes Kernel Buildscript"
+echo "Artemisia Kernel Buildscript"
 echo
 
 # Tuneables Here
 toolchain_path="/home/booh/XerXes/arm-eabi-6.0/bin/arm-eabi-"
-name_of_your_kernel="XerXes-v1"
+name_of_your_kernel="Artemisia-v0.1"
 defconfig="rhine_lp_honami_moj_defconfig"
 cpu_jobs="6"
 kerneltype="zImage"
@@ -103,7 +103,7 @@ case "$cchoice" in
 #ramdisk packing ends here
 		echo "Ramdisk packing finished!"
 		echo " "
-		echo "Start building XerXes Kernel..."
+		echo "Start building Artemisia Kernel..."
 		make -j$cpu_jobs > kernel-build-log.txt
 		echo
 		echo "Done"
