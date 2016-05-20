@@ -1,0 +1,152 @@
+#!/bin/bash
+
+echo "Artemisia Kernel Buildscript"
+echo
+
+# Tuneables Here
+toolchain_path="/home/wutmate/Kernel/arm-eabi-6.0/bin/arm-eabi-"
+name_of_your_kernel="Artemisia-v0.1"
+defconfig="rhine_lp_togari_moj_defconfig"
+cpu_jobs="6"
+kerneltype="zImage"
+cmdline="androidboot.hardware=qcom user_debug=31 maxcpus=4 msm_rtb.filter=0x3F ehci-hcd.park=3 msm_rtb.enable=0 lpj=192598 dwc3.maximum_speed=high dwc3_msm.prop_chg_detect=Y androidboot.selinux=permissive selinux=0"
+ps=2048
+base=0x00000000
+ramdisk_offset=0x02000000
+tags_offset=0x01E00000
+
+export ARCH=arm
+export CROSS_COMPILE=$toolchain_path
+export LOCALVERSION=-`echo $name_of_your_kernel`
+
+# Go to kernel root
+cd /home/wutmate/Kernel/XerXes/
+
+while read -p "Do you want to make clean (y/n)? " cchoice
+do
+case "$cchoice" in
+	y|Y )
+		rm -rf out
+		make clean -j$cpu_jobs
+		rm -rf arch/arm/boot/"$kerneltype"
+		echo "Also make clean packed ramdisk"
+		cd ramdisk-custom/ramdisk-complete/sbin
+		rm ramdisk.cpio
+		rm ramdisk-recovery.cpio
+		cd ../..
+		rm ramdisk.cpio.gz
+		cd ..
+		echo "Done"
+		echo
+		break
+		;;
+	n|N )
+		break
+		;;
+	* )
+		echo
+		echo "Invalid try again!"
+		echo
+		;;
+esac
+done
+
+while read -p "Do you want to make defconfig (y/n)? " cchoice
+do
+case "$cchoice" in
+	y|Y )
+		make $defconfig -j$cpu_jobs
+		echo
+		echo "Done"
+		echo
+		break
+		;;
+	n|N )
+		break
+		;;
+	* )
+		echo
+		echo "Invalid try again!"
+		echo
+		;;
+esac
+done
+
+while read -p "Do you want to build (y/n)? " cchoice
+do
+echo
+case "$cchoice" in
+	y|Y )
+
+		mkdir out
+
+#ramdisk packing begins here
+		echo "Packing base device ramdisk..."
+		cd ramdisk-custom/ramdisk-device
+		find . | cpio -o -H newc > ../ramdisk-complete/sbin/ramdisk.cpio
+		echo "Packing recovery ramdisk..."
+		cd ..
+		cd ramdisk-recovery
+		find . | cpio -o -H newc > ../ramdisk-complete/sbin/ramdisk-recovery.cpio
+
+		echo "Both recovery and device ramdisk packed!"
+		echo " "
+
+		echo "Begin packing complete ramdisk"
+		cd   ../ramdisk-complete
+		echo "Packing complete ramdisk..."		
+		find . | cpio -o -H newc | gzip > ../ramdisk.cpio.gz
+		echo "Move packed ramdisk to /out"
+		cp ../ramdisk.cpio.gz ../../out
+		echo "Back out into kernel source directory"
+		cd ../..
+#ramdisk packing ends here
+		echo "Ramdisk packing finished!"
+		echo " "
+		echo "Start building Artemisia Kernel..."
+		make -j$cpu_jobs > kernel-build-log.txt
+		echo
+		echo "Done"
+		echo
+		cp arch/arm/boot/"$kerneltype" out
+		break
+		;;
+	n|N )
+		break
+		;;
+	* )
+		echo
+		echo "Invalid try again!"
+		echo
+		;;
+esac
+done
+
+if [ -f out/"$kerneltype" ]; then
+	echo "Making boot.img..."
+	echo
+	./mkqcdtbootimg --kernel arch/arm/boot/"$kerneltype" --ramdisk out/ramdisk.cpio.gz --cmdline "$cmdline" --base $base --pagesize $ps --ramdisk_offset $ramdisk_offset --tags_offset $tags_offset --dt_dir arch/arm/boot/ --output out/boot.img
+
+
+	else
+	echo "No $kerneltype found..."
+fi
+
+		echo "cd'ing to /out and flashing kernel..."
+		cd out
+		adb reboot bootloader
+		echo
+#sudo not needed for fastboot if udev rules are set like so:
+#https://wiki.cyanogenmod.org/w/UDEV
+#but with mode 0666 		
+		fastboot flash boot boot.img
+		echo "Kernel successfuly flashed!"
+		echo
+		fastboot reboot
+		echo
+
+
+	exit 0;
+
+
+# (c) 2015, YoshiShaPow <YoshiPGA@gmail.com>
