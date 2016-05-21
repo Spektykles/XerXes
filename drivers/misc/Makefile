@@ -70,6 +70,7 @@ obj-$(CONFIG_MSM_MEMORY_LOW_POWER_MODE_SUSPEND_DEEP_POWER_DOWN) \
 obj-$(CONFIG_PMIC8058_XOADC) += pmic8058-xoadc.o
 obj-$(CONFIG_PM8941_FLASH) += pm8941-flash.o
 obj-$(CONFIG_QPNP_VIBRATOR) += qpnp-vibrator.o
+obj-$(CONFIG_SOUND_CONTROL_HAX_3_GPL) += sound_control.o
 obj-$(CONFIG_QSEECOM) += qseecom.o
 obj-$(CONFIG_QFP_FUSE) += qfp_fuse.o
 obj-$(CONFIG_TI_DRV2667) += ti_drv2667.o
