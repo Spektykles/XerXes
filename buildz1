@@ -32,7 +32,7 @@ case "$cchoice" in
 		echo "Also make clean packed ramdisk"
 		cd ramdisk-custom/ramdisk-complete/sbin
 		rm ramdisk.cpio
-		rm ramdisk-recovery.cpio
+		rm ramdisk-recovery-twrp.cpio
 		cd ../..
 		rm ramdisk.cpio.gz
 		cd ..
@@ -87,7 +87,7 @@ case "$cchoice" in
 		echo "Packing recovery ramdisk..."
 		cd ..
 		cd ramdisk-recovery
-		find . | cpio -o -H newc > ../ramdisk-complete/sbin/ramdisk-recovery.cpio
+		find . | cpio -o -H newc > ../ramdisk-complete/sbin/ramdisk-recovery-twrp.cpio
 
 		echo "Both recovery and device ramdisk packed!"
 		echo " "

@@ -27,7 +27,7 @@ busybox mknod -m 666 /dev/null c 1 3
 # mount filesystems
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
-busybox mount /dev/block/mmcblk0p24 /cache
+busybox mount -t ext4 ${BOOTREC_CACHE} /cache
 
 
 # check /cache/recovery/boot
@@ -43,7 +43,7 @@ busybox echo 0 > ${BOOTREC_LED_GREEN}
 busybox echo 255 > ${BOOTREC_LED_BLUE}
 
 # trigger vibration
-#busybox echo 200 > /sys/class/timed_output/vibrator/enable
+busybox echo 200 > /sys/class/timed_output/vibrator/enable
 
 # keycheck
 busybox cat ${BOOTREC_EVENT} > /dev/keycheck&
@@ -65,8 +65,8 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 	busybox echo 0 > ${BOOTREC_LED_BLUE}
 
 	# recovery ramdisk
-	# default recovery ramdisk is TWRP
-	load_image=/sbin/ramdisk-recovery.cpio
+	# default recovery ramdisk is CWM 
+	load_image=/sbin/ramdisk-recovery-philz.cpio
 
 
 	if [ -e /cache/recovery/boot ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; then
@@ -81,7 +81,7 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 		then
 			busybox rm /cache/recovery/boot_cwm
 			#load cwm ramdisk		
-			load_image=/sbin/ramdisk-recovery.cpio
+			load_image=/sbin/ramdisk-recovery-cwm.cpio
 			busybox echo 'Selected CWM' >>boot.txt
 		fi
 
@@ -90,7 +90,7 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 		then
 			busybox rm /cache/recovery/boot_twrp
 			#load twrp ramdisk
-			load_image=/sbin/ramdisk-recovery.cpio
+			load_image=/sbin/ramdisk-recovery-twrp.cpio
 			busybox echo 'Selected TWRP' >>boot.txt
 		fi
 
@@ -99,14 +99,12 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 		then
 			busybox rm /cache/recovery/boot_philz
 			#load philz ramdisk
-			load_image=/sbin/ramdisk-recovery.cpio
+			load_image=/sbin/ramdisk-recovery-twrp.cpio
 			busybox echo 'Selected PHILZ' >>boot.txt
 		fi
 
 
 	else
-
-		## DooMLoRD: handle multiple recovery ramdisks based on keypress
 	
 		if [ -s /dev/keycheck ]
 		then
@@ -114,7 +112,6 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 
 			export VOLUKEYCHECK=`busybox cat /dev/keycheck1 | busybox grep '0001 0073'`
 			export VOLDKEYCHECK=`busybox cat /dev/keycheck1 | busybox grep '0001 0072'`
-			export POWRKEYCHECK=`busybox cat /dev/keycheck1 | busybox grep '0001 0074'`
 			export CAMRKEYCHECK=`busybox cat /dev/keycheck1 | busybox grep '0001 0210'`
 
 			busybox rm /dev/keycheck
@@ -122,35 +119,23 @@ if [ -s /dev/keycheck ] || busybox grep -q warmboot=0x77665502 /proc/cmdline ; t
 
 			if [ -n "$VOLUKEYCHECK" ]
 			then
-				#load cwm ramdisk
-				load_image=/sbin/ramdisk-recovery.cpio
-				busybox echo 'Selected CWM' >>boot.txt
+				#load cwm ramdisk		
+				load_image=/sbin/ramdisk-recovery-philz.cpio
+				busybox echo 'Selected PHILZ' >>boot.txt
 			fi
 
 			if [ -n "$VOLDKEYCHECK" ]
 			then
 				#load twrp ramdisk
-				load_image=/sbin/ramdisk-recovery.cpio
+				load_image=/sbin/ramdisk-recovery-twrp.cpio
 				busybox echo 'Selected TWRP' >>boot.txt
-			fi
-			
-			if [ -n "$POWRKEYCHECK" ]
-			then
-				#load FOTA ramdisk
-				busybox mknod -m 600 ${BOOTREC_FOTA_NODE}
-				busybox mount -o remount,rw /
-				busybox ln -sf /sbin/busybox /sbin/sh
-				extract_elf_ramdisk -i ${BOOTREC_FOTA} -o /sbin/ramdisk-recovery-fota.cpio -t / -c
-				busybox rm /sbin/sh
-				load_image=/sbin/ramdisk-recovery-fota.cpio
-				busybox echo 'Selected FOTA recovery' >>boot.txt
 			fi
 
 			if [ -n "$CAMRKEYCHECK" ]
 			then
 				#load philz ramdisk
-				load_image=/sbin/ramdisk-recovery.cpio
-				busybox echo 'Selected PHILZ' >>boot.txt
+				load_image=/sbin/ramdisk-recovery-cwm.cpio
+				busybox echo 'Selected CWM' >>boot.txt
 			fi
 		fi
 

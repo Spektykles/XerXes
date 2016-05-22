@@ -311,6 +311,8 @@ enum slim_ch_rate {
 	SLIM_RATE_44100HZ,
 	SLIM_RATE_48000HZ,
         SLIM_RATE_96000HZ,
+        SLIM_RATE_128000HZ,
+        SLIM_RATE_256000HZ,
 };
 
 /*
