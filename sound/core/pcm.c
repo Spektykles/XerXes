@@ -315,6 +315,22 @@ static const char *snd_pcm_oss_format_name(int format)
 		return "U16_BE";
 	case AFMT_MPEG:
 		return "MPEG";
+	case AFMT_S24_LE:
+		return "S24_LE";
+	case AFMT_S24_BE:
+		return "S24_BE";
+	case AFMT_U24_LE:
+		return "U24_LE";
+	case AFMT_U24_BE:
+		return "U24_BE";
+	case AFMT_S24_3LE:
+		return "S24_3LE";
+	case AFMT_S24_3BE:
+		return "S24_3BE";
+	case AFMT_U24_3LE:
+		return "U24_3LE";
+	case AFMT_U24_3BE:
+		return "U24_3BE";
 	default:
 		return "unknown";
 	}
